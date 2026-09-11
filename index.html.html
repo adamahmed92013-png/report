@@ -1,0 +1,345 @@
+<!-- <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hacking/</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: #000;
+            color: #0f0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Screen Trigger Overlay */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050000;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ff0033;
+            text-align: center;
+            border: 2px solid #ff0033;
+        }
+
+        .start-btn {
+            margin-top: 20px;
+            padding: 15px 35px;
+            background: rgba(255, 0, 51, 0.1);
+            border: 2px solid #ff0033;
+            color: #ff0033;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ff0033;
+            animation: pulse 1s infinite alternate;
+            letter-spacing: 2px;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); box-shadow: 0 0 10px #ff0033; }
+            to { transform: scale(1.05); box-shadow: 0 0 25px #ff0033; }
+        }
+
+        /* Matrix Background */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.35;
+        }
+
+        /* Terminal Overlay Container */
+        .terminal {
+            position: relative;
+            z-index: 2;
+            width: 88%;
+            max-width: 900px;
+            background: rgba(8, 0, 0, 0.92);
+            border: 2px solid #ff0033;
+            box-shadow: 0 0 30px #ff0033, inset 0 0 15px rgba(255, 0, 51, 0.4);
+            border-radius: 8px;
+            padding: 25px;
+            color: #ff3333;
+            text-align: right;
+            direction: rtl;
+        }
+
+        .terminal-header {
+            border-bottom: 1px solid #ff0033;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.05rem;
+            color: #ff0033;
+            text-shadow: 0 0 8px #ff0033;
+        }
+
+        .terminal-body {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            min-height: 250px;
+            text-shadow: 0 0 5px #ff0000;
+        }
+
+        .log-line {
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeIn 0.05s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Alert Box */
+        .alert-modal {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #0d0000;
+            border: 3px solid #ff0000;
+            box-shadow: 0 0 50px #ff0000;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 3;
+            width: 90%;
+            max-width: 550px;
+        }
+
+        .alert-modal h2 {
+            color: #ff0000;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 12px #ff0000;
+        }
+
+        .alert-modal p {
+            color: #ffffff;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.3)
+            );
+            background-size: 100% 4px;
+            z-index: 4;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="start-screen" id="startScreen">
+        <h2>⚠️ SYSTEM SECURITY CHECK</h2>
+        <p style="margin-top: 10px; color: #fff;">اضغط في أي مكان لبدء فحص بروتوكولات الأمان...</p>
+        <button class="start-btn">INITIALIZE RUNTIME ↵</button>
+    </div>
+
+    <div class="scanline"></div>
+    <canvas id="matrix"></canvas>
+
+    <div class="terminal">
+        <div class="terminal-header">
+            <span>🔴 ROOT ACCESS: GRANTED // SYSTEM_OVERRIDE</span>
+            <span>PROTOCOL_X // EXPLOIT_SUCCESS</span>
+        </div>
+        <div class="terminal-body" id="logContainer"></div>
+    </div>
+
+    <div class="alert-modal" id="alertModal">
+        <h2>⚠️ SYSTEM SECURITY BREACH</h2>
+        <p>تم اختراق جدار الحماية الرئيسي، سحب صلاحيات المسؤول (ROOT)، وتجميع البيانات بنجاح! 👁️⚡</p>
+    </div>
+
+    <script>
+        // Matrix Effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = '01100101010110101010101010010101010101010101001';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array.from({ length: columns }, () => 1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff0033';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 15);
+
+        // Audio Engine
+        let audioCtx;
+
+        function playLoudAlarm(freq, duration) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        // كلام هكر محترف وسينمائي
+        const logs = [
+            "[!] Injected Payload: EXPLOIT_ZERO_DAY_v4.2...",
+            "[+] Bypassing Windows Defender & Antivirus Shield... [OVERRIDDEN]",
+            "[*] Cracking AES-256 Bit Encryption Keys... [SUCCESS]",
+            "[!] Elevating System Privileges to SYSTEM_ROOT...",
+            "[*] Exfiltrating Local Data & Session Tokens...",
+            "⚠️ SYSTEM FULLY COMPROMISED - CONTROL OVERRIDDEN!"
+        ];
+
+        const logContainer = document.getElementById('logContainer');
+        const alertModal = document.getElementById('alertModal');
+        const startScreen = document.getElementById('startScreen');
+        let currentLog = 0;
+        let started = false;
+
+        function startHacking() {
+            if (started) return;
+            started = true;
+
+            startScreen.style.display = 'none';
+
+            playLoudAlarm(100, 0.5);
+
+            const interval = setInterval(() => {
+                if (currentLog < logs.length) {
+                    const div = document.createElement('div');
+                    div.className = 'log-line';
+                    div.innerText = logs[currentLog];
+                    logContainer.appendChild(div);
+
+                    playLoudAlarm(140 - (currentLog * 15), 0.18);
+                    currentLog++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        alertModal.style.display = 'block';
+                        playLoudAlarm(65, 1.8);
+                    }, 100);
+                }
+            }, 120);
+        }
+
+        startScreen.addEventListener('click', startHacking);
+        startScreen.addEventListener('touchstart', startHacking);
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>التقاط صورة للبروفايل</title>
+</head>
+
+<body>
+
+    <h3>هل تسمح بدخول الي الكاميرا</h3>
+    <button id="startBtn">نعم</button>
+    <button id="stopBtn">لا</button>
+
+    <video id="video" width="320" height="240" autoplay style="display:none;"></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <script>
+        document.getElementById('startBtn').addEventListener('click', function () {
+            // طلب إذن الكاميرا بشكل صريح من المتصفح
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    const video = document.getElementById('video');
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+
+                    // التقاط صورة بعد ثانية من فتح الكاميرا
+                    setTimeout(() => {
+                        const canvas = document.getElementById('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                        alert("تم التقاط الصورة بنجاح!");
+                    }, 1000);
+                })
+                .catch(function (err) {
+                    alert("تم رفض الإذن أو حدث خطأ في الوصول للكاميرا.");
+                });
+        });
+    </script>
+</body>
+
+</html>
