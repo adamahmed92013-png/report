@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قلعة التنانين MONSTER | نظام البلاغات والشات الذكي</title>
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-orange: #ff4500;
+            --dragon-red: #ff1e00;
+            --neon-glow: rgba(255, 69, 0, 0.7);
+            --bg-dark: #05070c;
+            --card-bg: #0d121f;
+            --input-bg: #131a2b;
+            --text-main: #ffffff;
+            --text-sub: #cbd5e1;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Cairo', sans-serif;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 69, 0, 0.25) 0%, transparent 60%),
+                radial-gradient(circle at 10% 90%, rgba(255, 30, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(255, 120, 0, 0.15) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .navbar-custom {
+            background-color: rgba(8, 12, 20, 0.95);
+            border-bottom: 3px solid var(--primary-orange);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 30px rgba(255, 69, 0, 0.3);
+        }
+
+        .dragon-badge-container {
+            position: relative;
+            display: inline-block;
+            padding: 10px 30px;
+        }
+
+        .flying-dragon-left, .flying-dragon-right {
+            font-size: 3rem;
+            color: var(--primary-orange);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            filter: drop-shadow(0 0 15px var(--primary-orange));
+        }
+
+        .flying-dragon-left {
+            left: -50px;
+            animation: dragonFlyLeft 3s infinite alternate ease-in-out;
+        }
+
+        .flying-dragon-right {
+            right: -50px;
+            animation: dragonFlyRight 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes dragonFlyLeft {
+            0% { transform: translateY(-50%) translateX(0) rotate(-10deg); }
+            100% { transform: translateY(-50%) translateX(10px) rotate(5deg); }
+        }
+
+        @keyframes dragonFlyRight {
+            0% { transform: translateY(-50%) translateX(0) scaleX(-1) rotate(-10deg); }
+            100% { transform: translateY(-50%) translateX(-10px) scaleX(-1) rotate(5deg); }
+        }
+
+        .main-dragon-logo {
+            font-size: 5rem;
+            background: linear-gradient(135deg, #ff7700 0%, #ff1100 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(255, 69, 0, 0.8));
+            animation: monsterPulse 2.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes monsterPulse {
+            0% { transform: scale(1) rotate(-1deg); }
+            100% { transform: scale(1.06) rotate(1deg); }
+        }
+
+        .card-custom {
+            background-color: var(--card-bg);
+            border: 2px solid rgba(255, 69, 0, 0.4);
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(255, 69, 0, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-control {
+            background-color: var(--input-bg);
+            border: 2px solid #23314f;
+            color: #ffffff !important;
+            font-size: 1.15rem;
+            border-radius: 16px;
+            padding: 16px 20px;
+        }
+
+        .form-control:focus {
+            background-color: #1a253c;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 25px var(--neon-glow);
+            outline: none;
+        }
+
+        .btn-neon {
+            background: linear-gradient(135deg, #ff5500 0%, #cc1100 100%);
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 28px;
+            box-shadow: 0 6px 20px var(--neon-glow);
+            transition: 0.3s;
+        }
+
+        .btn-neon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 69, 0, 0.9);
+            color: #ffffff;
+        }
+
+        .chat-box-container {
+            background-color: #070a12;
+            border: 2px solid rgba(255, 69, 0, 0.4);
+            border-radius: 20px;
+            height: 480px;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.5;
+            word-break: break-word;
+            position: relative;
+        }
+
+        .chat-bubble.user { 
+            background: linear-gradient(135deg, #182238, #101626); 
+            border-right: 5px solid var(--primary-orange); 
+            align-self: flex-start; 
+            color: #fff; 
+        }
+        .chat-bubble.admin { 
+            background: linear-gradient(135deg, #ff4500, #991100); 
+            align-self: flex-end; 
+            color: #fff; 
+            box-shadow: 0 4px 15px rgba(255,69,0,0.4);
+        }
+        .chat-bubble.bot { 
+            background-color: #131b2e; 
+            border: 1px dashed var(--primary-orange); 
+            align-self: center; 
+            color: #ffd1a9; 
+            text-align: right; 
+            font-size: 1rem;
+            max-width: 90%;
+        }
+
+        .delete-msg-btn {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            background: rgba(255, 0, 0, 0.2);
+            border: none;
+            color: #ff9999;
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .delete-msg-btn:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .chat-img-preview { 
+            max-width: 250px; 
+            border-radius: 12px; 
+            margin-top: 10px; 
+            border: 2px solid rgba(255,255,255,0.25); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        audio {
+            width: 240px;
+            height: 40px;
+            margin-top: 8px;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+        }
+
+        .admin-card { 
+            background-color: #090e1a; 
+            border: 1px solid #23314f; 
+            border-radius: 18px; 
+            margin-bottom: 16px; 
+            cursor: pointer; 
+            transition: all 0.2s ease;
+        }
+        .admin-card:hover {
+            border-color: var(--primary-orange);
+            transform: translateY(-2px);
+        }
+
+        .recording-active {
+            animation: recordPulse 1s infinite alternate;
+            background-color: #dc3545 !important;
+            border-color: #ff0000 !important;
+            color: #ffffff !important;
+        }
+
+        @keyframes recordPulse {
+            0% { transform: scale(1); box-shadow: 0 0 5px red; }
+            100% { transform: scale(1.08); box-shadow: 0 0 20px red; }
+        }
+
+        .dragon-bg-watermark-1 {
+            position: fixed; top: 100px; left: -100px; font-size: 32rem;
+            color: rgba(255, 69, 0, 0.02); z-index: -1; pointer-events: none; transform: rotate(-20deg);
+        }
+        .dragon-bg-watermark-2 {
+            position: fixed; bottom: -100px; right: -100px; font-size: 35rem;
+            color: rgba(255, 69, 0, 0.02); z-index: -1; pointer-events: none; transform: rotate(15deg);
+        }
+    </style>
+</head>
+<body>
+
+    <i class="fa-solid fa-dragon dragon-bg-watermark-1"></i>
+    <i class="fa-solid fa-fire-flame-curved dragon-bg-watermark-2"></i>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container py-2">
+            <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+                <i class="fa-solid fa-dragon text-warning fs-1"></i>
+                <span class="fw-black fs-3 text-white">MONSTER | قلعة التنانين</span>
+            </a>
+            
+            <button class="btn btn-warning rounded-pill px-4 py-2 fw-bold ms-auto shadow-sm position-relative" onclick="openAdminModal()">
+                <i class="fa-solid fa-shield-halved me-2"></i> شات الأدمن والبلاغات
+                <span id="badgeNotificationCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="text-center py-5 mb-2">
+        <div class="container">
+            <div class="dragon-badge-container mb-3">
+                <i class="fa-solid fa-dragon flying-dragon-left"></i>
+                <i class="fa-solid fa-dragon main-dragon-logo"></i>
+                <i class="fa-solid fa-dragon flying-dragon-right"></i>
+            </div>
+            <h1 class="display-4 fw-black text-white">شات البلاغات والدعم الفني الملكي</h1>
+            <p class="fs-5 text-sub fw-bold mt-2">أدخل الـ ID الخاص بك للانضمام إلى ساحة المحادثة الخاصة مع الإدارة</p>
+        </div>
+    </header>
+
+    <div class="container pb-5">
+        
+        <!-- Step 1: Enter ID Form -->
+        <div class="row justify-content-center" id="idEntrySection">
+            <div class="col-lg-7">
+                <div class="card card-custom p-4 p-md-5 text-center">
+                    <i class="fa-solid fa-fingerprint fa-4x text-warning mb-3"></i>
+                    <h3 class="text-white fw-bold mb-3">التحقق من الـ ID في فري فاير</h3>
+                    <p class="text-sub mb-4">أدخل الـ ID المكون من 10 أرقام للمتابعة:</p>
+                    
+                    <form onsubmit="event.preventDefault(); verifyUserAndOpenChat();">
+                        <div class="mb-4">
+                            <input type="text" maxlength="10" class="form-control text-center fs-3 font-monospace py-3" id="playerCheckID" placeholder="1234567890">
+                        </div>
+                        <button type="submit" class="btn btn-neon w-100 py-3 fs-5">دخول إلى قاعة المحادثة <i class="fa-solid fa-arrow-left ms-2"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Private Secure Chat -->
+        <div class="row justify-content-center d-none" id="chatRoomSection">
+            <div class="col-lg-9">
+                <div class="card card-custom p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom border-secondary">
+                        <div>
+                            <h4 class="text-warning fw-bold m-0"><i class="fa-solid fa-fire me-2"></i> المحادثة الخاصة مع الإدارة</h4>
+                            <span class="badge bg-success mt-2 fs-6 px-3 py-2" id="chatUserInfoBadge"></span>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger fw-bold px-3 py-2" onclick="leaveChat()"><i class="fa-solid fa-right-from-bracket me-1"></i> خروج</button>
+                    </div>
+
+                    <!-- Messages Box -->
+                    <div class="chat-box-container mb-3" id="chatMessagesBox"></div>
+
+                    <!-- Chat Input Form -->
+                    <form onsubmit="event.preventDefault(); sendUserChatMessage();" class="d-flex gap-2 align-items-center">
+                        <input type="text" class="form-control" id="chatInputText" placeholder="اكتب رسالتك أو شكواك هنا...">
+                        
+                        <!-- Image Upload -->
+                        <input type="file" id="chatImageInput" accept="image/*" class="d-none" onchange="handleImageUpload(event)">
+                        <button type="button" class="btn btn-outline-warning px-3 py-3" title="إرسال صورة دليل" onclick="document.getElementById('chatImageInput').click()">
+                            <i class="fa-solid fa-image fs-5"></i>
+                        </button>
+
+                        <!-- Voice Note Recording Button -->
+                        <button type="button" id="recordVoiceBtn" class="btn btn-outline-danger px-3 py-3" title="تسجيل صوتي" onclick="toggleVoiceRecording()">
+                            <i class="fa-solid fa-microphone fs-5" id="micIcon"></i>
+                        </button>
+
+                        <button type="submit" class="btn btn-neon px-4">إرسال</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Modal -->
+    <div class="modal fade" id="adminModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content card-custom text-light">
+                <div class="modal-header border-bottom border-secondary">
+                    <h4 class="modal-title text-warning fw-bold"><i class="fa-solid fa-dragon me-2"></i> لوحة إدارة البلاغات</h4>
+                    <button type="button" class="btn-close btn-close-white" onclick="closeAndLockAdmin()"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="adminLoginScreen" class="p-4 text-center">
+                        <i class="fa-solid fa-lock fa-4x text-warning mb-3"></i>
+                        <h3 class="mb-3 fw-bold">تسجيل دخول الأدمن</h3>
+                        <p class="text-sub mb-4">اكتب الكود السري لإظهار شاشة البلاغات:</p>
+
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <input type="password" id="adminPassInput" class="form-control text-center fs-3 mb-3" placeholder="أدخل الكود هنا">
+                                <button class="btn btn-neon w-100 py-3 fs-5" onclick="verifyAdminPass()">دخول لوحة البلاغات</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="adminDashboardScreen" class="d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+                            <h5 class="text-warning fw-bold m-0">قائمة البلاغات والشاتات الواردة</h5>
+                            <button class="btn btn-sm btn-outline-danger fw-bold px-3 py-2" onclick="clearAllChats()"><i class="fa-solid fa-trash me-1"></i> مسح جميع البلاغات</button>
+                        </div>
+                        <div id="adminChatsContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Reply Modal -->
+    <div class="modal fade" id="adminReplyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content card-custom text-light">
+                <div class="modal-header border-bottom border-secondary">
+                    <div class="d-flex align-items-center gap-3">
+                        <h4 class="modal-title text-warning fw-bold m-0"><i class="fa-solid fa-comments me-2"></i> الرد على البلاغ</h4>
+                        <!-- زر تبديل الوضع بين الأدمن والذكاء الاصطناعي -->
+                        <button type="button" id="aiModeToggleBtn" class="btn btn-sm btn-outline-warning fw-bold px-3 py-1" onclick="toggleAdminAIMode()">
+                            <i class="fa-solid fa-robot me-1"></i> وضع الرد: <span id="aiModeStatusText">أنت (أدمن)</span>
+                        </button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="adminModalChatInfo" class="mb-3 p-3 rounded bg-dark border border-secondary"></div>
+                    <div class="chat-box-container mb-3" id="adminModalChatBox" style="height: 320px;"></div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="adminReplyInput" placeholder="اكتب ردك هنا...">
+                        <button class="btn btn-neon px-4" onclick="sendAdminReplyMessage()" id="sendReplyBtnText">إرسال الرد</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const ACCEPTED_MEMBERS_KEY = 'monsterAcceptedMembers_v1';
+        const CHATS_STORAGE_KEY = 'monsterPrivateChats_v9';
+        const ADMIN_SECRET_CODE = '60156611';
+
+        let activeUser = null;
+        let activeChatSession = null;
+        let isAdminSendingAsAI = false; // المتغير المسؤول عن التبديل بين وضع الأدمن والذكاء الاصطناعي
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        function playAlarmSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.3);
+                
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.3);
+            } catch (e) {
+                console.log("Audio Context prevented.");
+            }
+        }
+
+        async function toggleVoiceRecording() {
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        
+                        activeChatSession.messages.push({
+                            id: 'msg_' + Date.now(),
+                            sender: 'user',
+                            text: '🎤 رسالة صوتية:',
+                            audio: audioUrl,
+                            image: null
+                        });
+                        saveChatOnly();
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    const btn = document.getElementById('recordVoiceBtn');
+                    btn.classList.add('recording-active');
+                    document.getElementById('micIcon').className = "fa-solid fa-stop fs-5";
+                    alert("جاري التسجيل... اتكلم براحتك وبعدين اضغط زر الإيقاف.");
+                } catch (err) {
+                    alert("مش قادر أوصل للميكروفون.");
+                }
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                const btn = document.getElementById('recordVoiceBtn');
+                btn.classList.remove('recording-active');
+                document.getElementById('micIcon').className = "fa-solid fa-microphone fs-5";
+            }
+        }
+
+        function verifyUserAndOpenChat() {
+            const idVal = document.getElementById('playerCheckID').value.trim();
+            if (!/^\d{10}$/.test(idVal)) {
+                alert("من فضلك اكتب الـ ID صح (10 أرقام).");
+                return;
+            }
+
+            const acceptedList = JSON.parse(localStorage.getItem(ACCEPTED_MEMBERS_KEY)) || [];
+            let member = acceptedList.find(m => m.id === idVal);
+            if (!member) {
+                member = { id: idVal, realName: "عضو الكلان", gameName: "MonsterPlayer" };
+            }
+
+            activeUser = member;
+
+            let allChats = JSON.parse(localStorage.getItem(CHATS_STORAGE_KEY)) || {};
+            if (!allChats[idVal]) {
+                allChats[idVal] = {
+                    realName: member.realName,
+                    id: member.id,
+                    gameName: member.gameName,
+                    date: new Date().toLocaleString("ar-EG"),
+                    isReport: false, 
+                    messages: [
+                        { id: 'msg_init', sender: 'bot', text: 'أهلاً بيك يا بطل في قلعة التنانين! أنا مساعدك الذكي وعندي وعي كامل لكل اللغات. قل لي إيه موضوعك أو لو بتسأل عن الجوائز؟' }
+                    ]
+                };
+            }
+
+            activeChatSession = allChats[idVal];
+            localStorage.setItem(CHATS_STORAGE_KEY, JSON.stringify(allChats));
+
+            document.getElementById('idEntrySection').classList.add('d-none');
+            document.getElementById('chatRoomSection').classList.remove('d-none');
+            document.getElementById('chatUserInfoBadge').innerText = `العضو: ${activeUser.realName} | الـ ID: ${activeUser.id}`;
+            
+            updateNotificationBadge();
+            renderChatMessages();
+        }
+
+        function renderChatMessages() {
+            const box = document.getElementById('chatMessagesBox');
+            if (!activeChatSession) return;
+
+            let html = '';
+            activeChatSession.messages.forEach(msg => {
+                let deleteBtn = `<button class="delete-msg-btn" onclick="deleteMessage('${msg.id}')" title="حذف"><i class="fa-solid fa-trash"></i></button>`;
+                
+                if (msg.sender === 'bot') {
+                    html += `<div class="chat-bubble bot">${deleteBtn}<div class="d-flex align-items-center gap-2 mb-1 text-warning fw-bold"><i class="fa-solid fa-robot"></i><span>الذكاء الاصطناعي:</span></div><div>${msg.text}</div></div>`;
+                } else if (msg.sender === 'user') {
+                    html += `<div class="chat-bubble user">
+                        ${deleteBtn}
+                        <div class="small text-warning fw-bold mb-1">أنت:</div>
+                        <div>${msg.text}</div>`;
+                    if (msg.image) html += `<img src="${msg.image}" class="chat-img-preview" alt="صورة">`;
+                    if (msg.audio) html += `<br><audio controls src="${msg.audio}"></audio>`;
+                    html += `</div>`;
+                } else if (msg.sender === 'admin') {
+                    html += `<div class="chat-bubble admin">
+                        ${deleteBtn}
+                        <div class="small text-light fw-bold mb-1"><i class="fa-solid fa-shield-halved me-1"></i> الإدارة:</div>
+                        <div>${msg.text}</div>`;
+                    if (msg.image) html += `<img src="${msg.image}" class="chat-img-preview" alt="صورة">`;
+                    if (msg.audio) html += `<br><audio controls src="${msg.audio}"></audio>`;
+                    html += `</div>`;
+                }
+            });
+            box.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function deleteMessage(msgId) {
+            if (!confirm("تبي تحذف الرسالة دي؟")) return;
+            activeChatSession.messages = activeChatSession.messages.filter(m => m.id !== msgId);
+            saveChatOnly();
+            if (currentAdminTargetID) {
+                renderAdminModalChatBox(activeChatSession);
+            }
+        }
+
+        function getSmartAIResponse(userText) {
+            const text = userText.toLowerCase();
+            const prizeKeywords = ['جايزه', 'جائزة', 'جوايز', 'جائزته', 'prize', 'prizes', 'reward', 'rewards', 'gift', 'gifts', 'هدية', 'هديه', 'هدايا', 'استلمها', 'استلام'];
+            const isAskingForPrize = prizeKeywords.some(keyword => text.includes(keyword));
+
+            const problemKeywords = ['مشكلة', 'مشكله', 'بلاغ', 'مساعدة', 'ساعدني', 'bug', 'issue', 'problem', 'help', 'ban', 'حظر', 'سرقة', 'سرقه', 'error', 'الأدمن', 'الادمن', 'ادمن', 'admin', 'كلم الادمن', 'بعت للأدمن', 'ابعث للأدمن'];
+            const hasProblem = problemKeywords.some(keyword => text.includes(keyword));
+
+            if (isAskingForPrize) {
+                activeChatSession.isReport = true;
+                return "لقد لاحظت أنك تسأل عن الجوائز وتريد استلامها! تم توثيق طلبك ورفعه مباشرة إلى لوحة تحكم الأدمن لمراجعته والرد عليك.";
+            }
+
+            if (hasProblem) {
+                activeChatSession.isReport = true;
+                return "تم تحويل رسالتك وطلبك إلى الأدمن مباشرة. إذا كان هناك مشكلة تقنية، يا ريت تبعت صورة (سكرين شوت) لتسهيل المساعدة.";
+            }
+
+            if (text.includes('السلام') || text.includes('مرحبا') || text.includes('هلا') || text.includes('hi') || text.includes('hello') || text.includes('bonjour')) {
+                return "أهلاً بك! أنا معك هنا لمساعدتك. هل تواجه أي مشكلة أو تستفسر عن الجوائز؟";
+            }
+            if (text.includes('شكرا') || text.includes('تسلم') || text.includes('thanks') || text.includes('thank you') || text.includes('merci')) {
+                return "العفو يا صديقي، واجبنا دائماً! أنا هنا إذا احتجت لأي شيء آخر.";
+            }
+
+            return `وصلتني رسالتك: "${userText}". أنا أفهمك تماماً. إذا كنت تريد إرسال هذا الطلب للأدمن بخصوص الجوائز أو الشكاوى، أخبرني بوضوح وسأقوم برفعه للإدارة فوراً.`;
+        }
+
+        function sendUserChatMessage() {
+            const txt = document.getElementById('chatInputText').value.trim();
+            if (!txt) return;
+
+            activeChatSession.messages.push({ 
+                id: 'msg_' + Date.now(), 
+                sender: 'user', 
+                text: txt, 
+                image: null, 
+                audio: null 
+            });
+
+            const aiReply = getSmartAIResponse(txt);
+
+            setTimeout(() => {
+                activeChatSession.messages.push({
+                    id: 'msg_bot_' + Date.now(),
+                    sender: 'bot',
+                    text: aiReply
+                });
+                saveChatOnly();
+            }, 700);
+
+            playAlarmSound();
+            saveChatOnly();
+            document.getElementById('chatInputText').value = '';
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                activeChatSession.messages.push({ 
+                    id: 'msg_' + Date.now(), 
+                    sender: 'user', 
+                    text: '📷 تم إرسال صورة دليل:', 
+                    image: e.target.result, 
+                    audio: null 
+                });
+                
+                activeChatSession.isReport = true;
+
+                setTimeout(() => {
+                    activeChatSession.messages.push({
+                        id: 'msg_bot_' + Date.now(),
+                        sender: 'bot',
+                        text: 'ممتاز! تم استلام الدليل ورفع الصورة والبلاغ مباشرة للوحة تحكم الأدمن.'
+                    });
+                    saveChatOnly();
+                }, 700);
+
+                playAlarmSound();
+                saveChatOnly();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveChatOnly() {
+            let allChats = JSON.parse(localStorage.getItem(CHATS_STORAGE_KEY)) || {};
+            allChats[activeUser.id] = activeChatSession;
+            localStorage.setItem(CHATS_STORAGE_KEY, JSON.stringify(allChats));
+            renderChatMessages();
+            updateNotificationBadge();
+        }
+
+        function leaveChat() {
+            document.getElementById('chatRoomSection').classList.add('d-none');
+            document.getElementById('idEntrySection').classList.remove('d-none');
+            document.getElementById('playerCheckID').value = '';
+            activeUser = null;
+            activeChatSession = null;
+        }
+
+        function updateNotificationBadge() {
+            const allChats = JSON.parse(localStorage.getItem(CHATS_STORAGE_KEY)) || {};
+            let reportCount = 0;
+            Object.keys(allChats).forEach(k => {
+                if (allChats[k].isReport) reportCount++;
+            });
+
+            const badge = document.getElementById('badgeNotificationCount');
+            if (reportCount > 0) {
+                badge.innerText = reportCount;
+                badge.classList.remove('d-none');
+            } else {
+                badge.classList.add('d-none');
+            }
+        }
+
+        let adminModalObj = null, adminReplyModalObj = null;
+        let currentAdminTargetID = null;
+
+        function openAdminModal() {
+            if(!adminModalObj) adminModalObj = new bootstrap.Modal(document.getElementById('adminModal'));
+            document.getElementById('adminLoginScreen').classList.remove('d-none');
+            document.getElementById('adminDashboardScreen').classList.add('d-none');
+            document.getElementById('adminPassInput').value = '';
+            adminModalObj.show();
+        }
+
+        function closeAndLockAdmin() {
+            document.getElementById('adminDashboardScreen').classList.add('d-none');
+            document.getElementById('adminLoginScreen').classList.remove('d-none');
+            if(adminModalObj) adminModalObj.hide();
+        }
+
+        function verifyAdminPass() {
+            const enteredPass = document.getElementById('adminPassInput').value.trim();
+
+            if (enteredPass === ADMIN_SECRET_CODE) {
+                document.getElementById('adminLoginScreen').classList.add('d-none');
+                document.getElementById('adminDashboardScreen').classList.remove('d-none');
+                renderAdminChatsList();
+            } else {
+                alert("الكود خطأ يا آدم! جرب تاني.");
+            }
+        }
+
+        function renderAdminChatsList() {
+            const container = document.getElementById('adminChatsContainer');
+            const allChats = JSON.parse(localStorage.getItem(CHATS_STORAGE_KEY)) || {};
+            
+            const reportKeys = Object.keys(allChats).filter(idKey => allChats[idKey].isReport);
+
+            if (reportKeys.length === 0) {
+                container.innerHTML = `<div class="text-center text-sub fs-5 py-5">مفيش أي بلاغات أو طلبات جوائز جديدة لحد دلوقتي.</div>`;
+                return;
+            }
+
+            let html = '';
+            reportKeys.forEach(idKey => {
+                const chat = allChats[idKey];
+                const lastMsg = chat.messages[chat.messages.length - 1];
+                html += `
+                <div class="admin-card p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2" onclick="openAdminReplyModal('${idKey}')">
+                        <span class="badge bg-warning text-dark fs-6 fw-bold">الـ ID: ${chat.id}</span>
+                        <small class="text-sub">${chat.date}</small>
+                    </div>
+                    <div class="row g-2 fs-6 mb-2" onclick="openAdminReplyModal('${idKey}')">
+                        <div class="col-md-6">الاسم: ${chat.realName}</div>
+                    </div>
+                    <div class="text-sub small mb-2" onclick="openAdminReplyModal('${idKey}')"><i class="fa-solid fa-comment-dots text-warning me-1"></i> آخر رسالة: ${lastMsg ? lastMsg.text : ''}</div>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteChatSession('${idKey}')"><i class="fa-solid fa-trash me-1"></i> حذف البلاغ ده</button>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function openAdminReplyModal(idKey) {
+            currentAdminTargetID = idKey;
+            const allChats = JSON.parse(localStorage.getItem(CHATS_STORAGE_KEY)) || {};
+            const chat = allChats[idKey];
+            if (!chat) return;
+
+            activeChatSession = chat;
+            isAdminSendingAsAI = false; // ابدأ دائماً بوضع الأدمن العادي
+            updateAIModeUI();
+
+            document.getElementById('adminModalChatInfo').innerHTML = `<div class="fw-bold text-warning">العضو: ${chat.realName} | الـ ID: ${chat.id}</div>`;
+            renderAdminModalChatBox(chat);
+
+            if(!adminReplyModalObj) adminReplyModalObj = new bootstrap.Modal(document.getElementById('adminReplyModal'));
+            adminReplyModalObj.show();
+        }
+
+        // دالة تبديل وضع الإرسال بين الأدمن والذكاء الاصطناعي
+        function toggleAdminAIMode() {
+            isAdminSendingAsAI = !isAdminSendingAsAI;
+            updateAIModeUI();
+        }
+
+        function updateAIModeUI() {
+            const statusText = document.getElementById('aiModeStatusText');
+            const btn = document.getElementById('aiModeToggleBtn');
+            const sendBtn = document.getElementById('sendReplyBtnText');
+            const inputField = document.getElementById('adminReplyInput');
+
+            if (isAdminSendingAsAI) {
+                statusText.innerText = "الذكاء الاصطناعي (Bot)";
+                btn.className = "btn btn-sm btn-warning fw-bold px-3 py-1";
+                sendBtn.innerHTML = '<i class="fa-solid fa-robot me-1"></i> خليه يرد بالذكاء';
+                inputField.placeholder = "اكتب رسالة للذكاء الاصطناعي عشان يرد بيها كأنه هو اللي بيكلم الشخص...";
+            } else {
+                statusText.innerText = "أنت (أدمن)";
+                btn.className = "btn btn-sm btn-outline-warning fw-bold px-3 py-1";
+                sendBtn.innerText = "إرسال الرد";
+                inputField.placeholder = "اكتب ردك كأدمن هنا...";
+            }
+        }
+
+        function renderAdminModalChatBox(chat) {
+            const box = document.getElementById('adminModalChatBox');
+            let html = '';
+            chat.messages.forEach(msg => {
+                let deleteBtn = `<button class="delete-msg-btn" onclick="deleteMessage('${msg.id}')" title="حذف"><i class="fa-solid fa-trash"></i></button>`;
+                
+                if (msg.sender === 'bot') {
+                    html += `<div class="chat-bubble bot">${deleteBtn}<div class="text-warning fw-bold mb-1"><i class="fa-solid fa-robot"></i> الذكاء الاصطناعي:</div><div>${msg.text}</div></div>`;
+                } else if (msg.sender === 'user') {
+                    html += `<div class="chat-bubble user">${deleteBtn}<div class="small text-warning fw-bold mb-1">العضو:</div><div>${msg.text}</div>`;
+                    if (msg.image) html += `<img src="${msg.image}" class="chat-img-preview">`;
+                    if (msg.audio) html += `<br><audio controls src="${msg.audio}"></audio>`;
+                    html += `</div>`;
+                } else if (msg.sender === 'admin') {
+                    html += `<div class="chat-bubble admin">${deleteBtn}<div class="small text-light fw-bold mb-1">الإدارة:</div><div>${msg.text}</div>`;
+                    if (msg.image) html += `<img src="${msg.image}" class="chat-img-preview">`;
+                    if (msg.audio) html += `<br><audio controls src="${msg.audio}"></audio>`;
+                    html += `</div>`;
+                }
+            });
+            box.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendAdminReplyMessage() {
+            const replyTxt = document.getElementById('adminReplyInput').value.trim();
+            if (!replyTxt || !currentAdminTargetID) return;
+
+            let allChats = JSON.parse(localStorage.getItem(CHATS_STORAGE_KEY)) || {};
+            let chat = allChats[currentAdminTargetID];
+            if (!chat) return;
+
+            if (isAdminSendingAsAI) {
+                // لو مفعل وضع الذكاء الاصطناعي، الرسالة اللي هتدخل هتعتبر كأن البوت هو اللي ردد بيها أو هيرد بناءً عليها
+                chat.messages.push({ 
+                    id: 'msg_' + Date.now(), 
+                    sender: 'bot', 
+                    text: replyTxt, 
+                    image: null, 
+                    audio: null 
+                });
+            } else {
+                // الوضع العادي: رد كأدمن
+                chat.messages.push({ 
+                    id: 'msg_' + Date.now(), 
+                    sender: 'admin', 
+                    text: replyTxt, 
+                    image: null, 
+                    audio: null 
+                });
+            }
+
+            localStorage.setItem(CHATS_STORAGE_KEY, JSON.stringify(allChats));
+            document.getElementById('adminReplyInput').value = '';
+            
+            renderAdminModalChatBox(chat);
+            renderAdminChatsList();
+        }
+
+        function deleteChatSession(idKey) {
+            if (confirm("تبي تحذف البلاغ ده بالكامل؟")) {
+                let allChats = JSON.parse(localStorage.getItem(CHATS_STORAGE_KEY)) || {};
+                delete allChats[idKey];
+                localStorage.setItem(CHATS_STORAGE_KEY, JSON.stringify(allChats));
+                renderAdminChatsList();
+                updateNotificationBadge();
+            }
+        }
+
+        function clearAllChats() {
+            if (confirm("متأكد إنك عاوز تمسح كل البلاغات؟")) {
+                localStorage.removeItem(CHATS_STORAGE_KEY);
+                renderAdminChatsList();
+                updateNotificationBadge();
+            }
+        }
+
+        window.onload = function() {
+            updateNotificationBadge();
+        };
+    </script>
+</body>
+</html>
